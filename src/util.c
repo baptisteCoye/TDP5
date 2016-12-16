@@ -241,3 +241,22 @@ void fill_bloc(particule* bloc, int N, double x, double y, double sizeX, double 
     bloc[i].vy = (double) (rand()% N)* 1000;
   }
 }
+
+void monopole(particule* bloc, int N, double * m){
+  *m = 0;
+  for(int i = 0; i < N; i++){
+    *m += bloc[i].m;
+  }
+}
+
+void dipole(particule* bloc, int N, double m, double *vect[2]){
+  (*vect)[0] = 0;
+  (*vect)[1] = 0;
+
+  for(int i = 0; i < N; i++){
+    (*vect)[0] += (bloc[i].m)*(bloc[i].px);
+    (*vect)[1] += (bloc[i].m)*(bloc[j].px);
+  }
+  (*vect)[0] /= m;
+  (*vect)[1] /= m;
+}
