@@ -246,14 +246,34 @@ void monopole(particule* bloc, int N, double * m){
   }
 }
 
-void dipole(particule* bloc, int N, double m, double *vect[2]){
-  (*vect)[0] = 0;
-  (*vect)[1] = 0;
+particule P2M(particule* bloc, int N){
+  double m;
+  particule resultat;
+
+  monopole(bloc, N, m);
+  
+  resultat.m = m;
+  resultat.px = 0;
+  resultat.py = 0;
+  resultat.vx = 0;
+  resultat.vy = 0;
 
   for(int i = 0; i < N; i++){
-    (*vect)[0] += (bloc[i].m)*(bloc[i].px);
-    (*vect)[1] += (bloc[i].m)*(bloc[j].px);
+    resultat.px += (bloc[i].m)*(bloc[i].px);
+    resultat.py += (bloc[i].m)*(bloc[i].py);    
   }
-  (*vect)[0] /= m;
-  (*vect)[1] /= m;
+  resultat.px /= m;
+  resultat.py /= m;
+ 
+  return resultat;
+}
+
+void M2P(vecteur* force, particule mp, particule* data, int N){
+  vecteur tmp;
+  double distTmp;
+  for(int i = 0; i < N; i++){
+    tmp = force_interaction(data[i], mp, &distTmp);
+    force[i].x += tmp.x;
+    force[i].y += tmp.y;
+  }
 }
