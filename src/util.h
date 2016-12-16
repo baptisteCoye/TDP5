@@ -51,7 +51,7 @@ int readData(char* filename, int nbProc, int myRank, particule ** data, int * nb
  * \param[out] force Les valeurs des forces sur les particules.
  * \param[out] distances Les distances entre chaque particule et leur plus proches voisins.
  */
-void calcul_local(vecteur* force, particule* data, int N, double *distances);
+void P2P(vecteur* force, particule* data, int N, double *distances);
 
 /*!
  * \brief Calcule les forces induites par un groupe de particules A sur un autre groupe B.
@@ -85,4 +85,5 @@ double determine_dt(particule data, vecteur force, double distMin);
 
 double determine_dt_forall(particule* data, vecteur* force, int N, double* distMin, int nbProc);
 
+void fill_bloc(particule* bloc, int N, double x, double y, double sizeX, double sizeY);
 #endif
