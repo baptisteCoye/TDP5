@@ -7,7 +7,7 @@
 #include "util.h"
 
 #define MIN_DISTANCE 0.01
-
+#define DISTANCE 100
 int main(int argc, char ** argv){
   
   if (argc != 3){
@@ -25,12 +25,20 @@ int main(int argc, char ** argv){
 
   int i, j;
 
-  for (i = 0; i < N; i++){
+  for (i = 0; i < N/2; i++){
     parts[i].m = (double) (rand() % (1000*N)) / N;
-    parts[i].px = (double) (rand() % (1000*N)) / N -500;
-    parts[i].py = (double) (rand() % (1000*N)) / N -500;
+    parts[i].px = (double) (rand() % (10));
+    parts[i].py = (double) (rand() % (10));
     parts[i].vx = (double) (rand() % (1000*N)) / N -500;
     parts[i].vy = (double) (rand() % (1000*N)) / N -500;
+  }
+
+  for (i = N/2; i < N; i++){
+    parts[i].m = (double) (rand() % (1000*N)) / N;
+    parts[i].px = (double) (rand() % (10 + DISTANCE));
+    parts[i].py = (double) (rand() % (10 + DISTANCE));
+    parts[i].vx = (double) (rand() % (1000*N)) / N -500;
+    parts[i].vy = (double) (rand() % (1000*N)) / N -500;	
   }
 
   for (i = 0; i < N; i++){
