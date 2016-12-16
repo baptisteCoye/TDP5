@@ -35,8 +35,8 @@ int main(int argc, char ** argv){
 
   for (i = N/2; i < N; i++){
     parts[i].m = (double) (rand() % (1000*N)) / N;
-    parts[i].px = (double) (rand() % 10) + DISTANCE);
-  parts[i].py = (double) (rand() % 10) + DISTANCE);
+    parts[i].px = (double) ((rand() % 10) + DISTANCE);
+    parts[i].py = (double) ((rand() % 10) + DISTANCE);
     parts[i].vx = (double) (rand() % (1000*N)) / N -500;
     parts[i].vy = (double) (rand() % (1000*N)) / N -500;	
   }
@@ -44,8 +44,8 @@ int main(int argc, char ** argv){
   for (i = 0; i < N; i++){
     for (j = 0; j < N; j++){
       if ((i!=j) && (distance(parts[i], parts[j]) < MIN_DISTANCE)){
-	parts[i].px = (double) (rand() % (1000*N)) / N;
-	parts[i].py = (double) (rand() % (1000*N)) / N;
+	parts[i].px = (double) (rand() % (10));
+	parts[i].py = (double) (rand() % (10));
 	i--;
 	break;
       }

@@ -76,7 +76,7 @@ int readData(char* filename, int nbProc, int myRank, particule ** data, int * nb
   return 0;
 }
 
-void calcul_local(vecteur* force, particule* data, int N, double* distMin){
+void P2P(vecteur* force, particule* data, int N, double* distMin){
 
   vecteur tmp;
   double distTmp;
@@ -228,4 +228,16 @@ double determine_dt_forall(particule* data, vecteur* force, int N, double* distM
       dtTot = dt;
 
     return dtTot;
+}
+
+
+void fill_bloc(particule* bloc, int N, double x, double y, double sizeX, double sizeY){
+  int i;
+  for(i = 0; i < N; i++){
+    bloc[i].m = (double) (rand()% N)* 1000;
+    bloc[i].px = (double) (rand() % sizeX) + x;
+    bloc[i].py = (double) (rand() % sizeY) + y;
+    bloc[i].vx = (double) (rand()% N)* 1000;
+    bloc[i].vy = (double) (rand()% N)* 1000;
+  }
 }
