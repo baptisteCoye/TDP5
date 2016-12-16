@@ -89,4 +89,10 @@ double determine_dt(particule data, vecteur force, double distMin);
 double determine_dt_forall(particule* data, vecteur* force, int N, double* distMin, int nbProc);
 
 void fill_random_bloc(particule* bloc, int N, double x, double y, double sizeX, double sizeY);
+
+particule P2M(particule* bloc, int N);
+
+void M2P(vecteur* force, particule mp, particule* data, int N);
+
 #endif
+

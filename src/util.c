@@ -234,8 +234,8 @@ void fill_random_bloc(particule* bloc, int N, double x, double y, double sizeX, 
     bloc[i].m = (double) (rand() % 1000);
     bloc[i].px = (double) ((rand() % ((int) sizeX)) + x);
     bloc[i].py = (double) ((rand() % ((int) sizeY)) + (y - sizeY));
-    bloc[i].vx = (double) (rand() % ((int) sizeX));
-    bloc[i].vy = (double) (rand() % ((int) sizeY));
+    bloc[i].vx = (double) (rand() % ((int) sizeX) - (sizeX/2));
+    bloc[i].vy = (double) (rand() % ((int) sizeY) - (sizeY/2));
   }
 }
 
@@ -250,7 +250,7 @@ particule P2M(particule* bloc, int N){
   double m;
   particule resultat;
 
-  monopole(bloc, N, m);
+  monopole(bloc, N, &m);
   
   resultat.m = m;
   resultat.px = 0;
@@ -277,3 +277,4 @@ void M2P(vecteur* force, particule mp, particule* data, int N){
     force[i].y += tmp.y;
   }
 }
+
