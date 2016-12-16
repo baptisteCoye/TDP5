@@ -252,7 +252,7 @@ void dipole(particule* bloc, int N, double m, double *vect[2]){
 
   for(int i = 0; i < N; i++){
     (*vect)[0] += (bloc[i].m)*(bloc[i].px);
-    (*vect)[1] += (bloc[i].m)*(bloc[j].px);
+    (*vect)[1] += (bloc[i].m)*(bloc[i].px);
   }
   (*vect)[0] /= m;
   (*vect)[1] /= m;
