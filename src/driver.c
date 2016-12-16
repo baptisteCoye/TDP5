@@ -142,7 +142,7 @@ int main(int argc, char **argv){
   printf(":%d: nombre de particules dans le fichier : %d\n", rank, nbParticules);
   printf(":%d: nombre de processus actifs : %d\n", rank, nbProc);
   
-  printf(":%d: contient %d testicules\n", rank, nbPartPerProc);
+  printf(":%d: contient %d particules\n", rank, nbPartPerProc);
 #endif
 
 #ifdef SAVE_RESULTS
@@ -237,7 +237,7 @@ int main(int argc, char **argv){
 
     // Pendant que le MPI gere l'envoi des donnees, on calcule
     // les forces entre les particules dans data et elles memes.
-    calcul_local(force, data, nbPartPerProc, distMin);
+    P2P(force, data, nbPartPerProc, distMin);
 
     if (nbProc > 1){
       // Une fois que le calcul est fini, on attend la fin des echanges.
