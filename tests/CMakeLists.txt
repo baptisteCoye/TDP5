@@ -11,3 +11,9 @@ INCLUDE_DIRECTORIES(
 
 add_executable(test_seq test_sequentiel.c)
 target_link_libraries(test_seq util perf)
+
+add_executable(test_direct test_direct.c)
+target_link_libraries(test_direct util)
+
+add_executable(test_direct_ext test_direct_ext.c)
+target_link_libraries(test_direct_ext util)

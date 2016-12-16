@@ -270,7 +270,7 @@ int main(int argc, char **argv){
             
       // Pendant que le MPI gere l'envoi des donnees, on calcule
       // les forces entre les particules de data et celles reçues precedemment.
-      calcul_lointain(force, buffer[i%2], data, nbPartPerProc, distMin);
+      P2P_ext(force, buffer[i%2], data, nbPartPerProc, distMin);
 
       // Une fois le calcul fini, on attend la fin des echanges.
       MPI_Wait(&sendRequests[i%2], &status);

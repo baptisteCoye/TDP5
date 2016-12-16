@@ -83,7 +83,7 @@ int main(int argc, void** argv){
       distMin[i] = -1;
     }
 
-    calcul_local(forces, data, N, distMin);
+    P2P(forces, data, N, distMin);
 
     double dtTmp;
 

@@ -1,15 +1,18 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include<stdlib.h>
-#include<stdio.h>
-#include<math.h>
-#include<mpi.h>
-
-#include"datatype.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <mpi.h>
+#include <time.h>
+#include "datatype.h"
 
 #define DT_MAX 100000
 #define DT_MIN -100000
+
+#define max(a,b) (a > b) ? a : b
+#define min(a,b) (a > b) ? b : a
 
 /*!
  * \brief calcule la distance entre deux particules.
@@ -63,7 +66,7 @@ void P2P(vecteur* force, particule* data, int N, double *distances);
  * \param[out] force Les forces appliquees sur chaque particule.
  * \param[out] distMin Les distance entre chaque particule et son plus proche voisin.
  */
-void calcul_lointain(vecteur* force, particule* buffer, particule* data, int N, double * distMin);
+void P2P_ext(vecteur* force, particule* buffer, particule* data, int N, double * distMin);
 
 /*!
  * \brief Copie les informations d'un tableau de particule vers un autre.
@@ -85,5 +88,5 @@ double determine_dt(particule data, vecteur force, double distMin);
 
 double determine_dt_forall(particule* data, vecteur* force, int N, double* distMin, int nbProc);
 
-void fill_bloc(particule* bloc, int N, double x, double y, double sizeX, double sizeY);
+void fill_random_bloc(particule* bloc, int N, double x, double y, double sizeX, double sizeY);
 #endif

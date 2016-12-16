@@ -102,7 +102,7 @@ void P2P(vecteur* force, particule* data, int N, double* distMin){
   }
 }
 
-void calcul_lointain(vecteur* force, particule* buffer, particule* data, int N, double* distMin){
+void P2P_ext(vecteur* force, particule* buffer, particule* data, int N, double* distMin){
   vecteur tmp;
   double distTmp;
 
@@ -181,11 +181,6 @@ int save_results(particule * data, const int N, char * filename, int nbProc, int
   return 0;
 }
 
-double max(double a, double b){
-    if(a < b) return b;
-    else return a;
-}
-
 double determine_rac_max(double a, double b, double c){
     double det = b*b - 4*a*c;
     if(det < 0){
@@ -231,13 +226,15 @@ double determine_dt_forall(particule* data, vecteur* force, int N, double* distM
 }
 
 
-void fill_bloc(particule* bloc, int N, double x, double y, double sizeX, double sizeY){
+void fill_random_bloc(particule* bloc, int N, double x, double y, double sizeX, double sizeY){
   int i;
+  srand(time(NULL));
+  
   for(i = 0; i < N; i++){
-    bloc[i].m = (double) (rand()% N)* 1000;
-    bloc[i].px = (double) (rand() % sizeX) + x;
-    bloc[i].py = (double) (rand() % sizeY) + y;
-    bloc[i].vx = (double) (rand()% N)* 1000;
-    bloc[i].vy = (double) (rand()% N)* 1000;
+    bloc[i].m = (double) (rand() % 1000);
+    bloc[i].px = (double) ((rand() % ((int) sizeX)) + x);
+    bloc[i].py = (double) ((rand() % ((int) sizeY)) + (y - sizeY));
+    bloc[i].vx = (double) (rand() % ((int) sizeX));
+    bloc[i].vy = (double) (rand() % ((int) sizeY));
   }
 }

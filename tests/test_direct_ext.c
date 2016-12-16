@@ -8,7 +8,6 @@
 
 #define FILENAME "../tests/data/file_test2.txt"
 #define NB_ITER 100
-#define d 100
 
 int main(int argc, char ** argv){
   int N = 8;
@@ -16,7 +15,7 @@ int main(int argc, char ** argv){
   particule * total = malloc(sizeof(particule) * N);  
   vecteur * force = malloc(sizeof(vecteur) * N);
   double * distMin = malloc(sizeof(double) * N);
-  double dt;
+  double dt, dt1, dt2;
 
   for (int i = 0; i < N; i++){
     total[i].m = 10;
@@ -40,13 +39,40 @@ int main(int argc, char ** argv){
     distMin[i] = -1.0;
   }
 
-  P2P(force, total, N, distMin);
+  // P2P du bloc 1
+  P2P(&force[0], &total[0], n, &distMin[0]);
+  
+  // P2P du bloc 2
+  P2P(&force[n], &total[n], n, &distMin[n]);
 
-  accelerate(total,force,N);
+  // P2P entre les deux blocs 
+  // bloc 2 sur bloc 1 :
+  P2P_ext(&force[0], &total[n], &total[0], n, &distMin[0]);
 
-  dt = determine_dt_forall(total, force, N, distMin, 1);
+  // bloc 1 sur bloc 2
+  P2P_ext(&force[n], &total[0], &total[n], n, &distMin[n]);
 
-  move_particules(total,force, N, dt);
+  // accelere les particules du bloc 1
+  accelerate(&total[0],&force[0],n);
+
+  // accelere les particules du bloc 2
+  accelerate(&total[n],&force[n],n);
+
+  // determine le dt dans le bloc 1
+  dt1 = determine_dt_forall(&total[0], &force[0], n, &distMin[0], 1);
+
+  // determine le dt dans le bloc 2
+  dt2 = determine_dt_forall(&total[n], &force[n], n, &distMin[n], 1);
+
+  // calcule le bon dt
+  dt = min(dt1, dt2);
+
+  //bouge les particules dans le bloc 1
+  move_particules(&total[0],&force[0], n, dt);
+
+  //bouge les particules dans le bloc 2
+  move_particules(&total[n],&force[n], n, dt);
+
 
   printf("bloc 1 : \n");
   for (int i = 0; i < n; i++){
