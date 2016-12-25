@@ -23,38 +23,46 @@ typedef struct {
 typedef struct {
   particule * p;
   int h;
-  int nb_feuilles;
-  int nb_noeuds;
+  int * begin;
   int * tailles_blocs;
   int max_part;
 } quadtree;
 
 void allocate_quadtree(quadtree* q, int h, int max_part){
-  int nb_feuilles = pow(4,h);
-  q->nb_feuilles = nb_feuilles;
   q->h = h;
+  q->begin = malloc(sizeof(int) * (h+1));
+
+  q->begin[0] = 0;
+  for (int i = 1; i <= h; i++){
+    q->begin[i] = q->begin[i-1] + pow(4, i-1);
+  }
   q->max_part = max_part;
 
-  int nb_noeuds = 0;
-  int tmp = nb_feuilles;
-  do {
-    tmp /= 4;
-    nb_noeuds += tmp;
-  } while (tmp > 1);
-
-  q->p = malloc(sizeof(particule) * (nb_noeuds + max_part*nb_feuilles));
-  
-  q->tailles_blocs = malloc(sizeof(int) * nb_feuilles));
+  q->p = malloc(sizeof(particule) * (q->begin[h] + max_part*pow(4,h)));
+  q->tailles_blocs = malloc(sizeof(int) * pow(4,h));
 }
 
 void destroy_quadtree(quadtree* q){
-  free(q->p); free(q->tailles_blocs);
+  free(q->p); free(q->begin); free(q->tailles_blocs);
   q->h = -1; 
-  q->nb_feuilles = -1; q->nb_noeuds = -1;
   q->max_part = -1;
 }
 
-particule get_noeud(int hauteur, ){}
+particule get_noeud(quadtree q, int hauteur, int i, int j){
+  if ((hauteur >= q.h) || (hauteur < 0)){
+    fprintf(stderr,"mauvaise profondeur dans le quadtree : demandé : %d, profondeur des feuilles : %d\n", hauteur, q.h);
+    return p;
+  }
+  if ((i >= pow(2, hauteur)) || (j >= pow(2,h))){
+    fprintf(stderr,"mauvais indices dans le quadtree, i = %d, j = %d, max = %d", i, j, pow(2, hauteur));
+    return p;
+  }
 
+  return q.p[q.begin[h]+i*pow(2,h)+j];
+}
+
+particule * get_bloc(quadtree q, int i, int j){
+  return &(q.p[q.begin[q.h] + 2000*(i*pow(2,h) + j)]);
+}
 
 #endif

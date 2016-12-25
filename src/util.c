@@ -278,3 +278,6 @@ void M2P(vecteur* force, particule mp, particule* data, int N){
   }
 }
 
+void M2M(particule * bloc, int N){
+  P2M(bloc, N);
+}

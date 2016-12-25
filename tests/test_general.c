@@ -19,7 +19,15 @@ int main(int argc, char ** argv){
   int n = NB_PART_PER_BLOCK;
   int N = n*nb_blocks;
 
-  particule * total = malloc(sizeof(particule) * N);  
+  quadtree q;
+  allocate_quadtree(&q, h, MAX_SIZE_BLOC);
+
+  for (int i = 0; i < pow(2,h); i++){
+    for (int j = 0; j < pow(2,h); i++){
+      fill_random_bloc(get_bloc(q, i, j), NBPART_PER_BLOCK, 100*(i%pow(2,h)), (pow(2,h)*100) - 100*(i/pow(2,h)), 100, 100);
+    }
+  }
+  
   vecteur * force = malloc(sizeof(vecteur) * N);
   double * distMin = malloc(sizeof(double) * N);
   double dt, dt1, dt2;

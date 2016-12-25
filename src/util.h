@@ -94,5 +94,7 @@ particule P2M(particule* bloc, int N);
 
 void M2P(vecteur* force, particule mp, particule* data, int N);
 
+void M2M(particule* bloc, int N);
+
 #endif
 
