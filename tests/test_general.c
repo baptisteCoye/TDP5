@@ -32,8 +32,6 @@ int main(int argc, char ** argv){
   double * distMin = malloc(sizeof(double) * N);
   double dt, dt1, dt2;
 
-  fill_random_bloc(total, N, 0, 1600, 1600, 1600);
-
   printf("bloc 1 : \n");
   for (int i = 0; i < n; i++){
     print_particule(total[i]);
@@ -43,7 +41,7 @@ int main(int argc, char ** argv){
     print_particule(total[i]);
   }
  
-  // Initialisation des forces a 0 et des distances à -1
+  // Initialisation des forces à 0 et des distances à -1
   for (int i = 0; i < N; i++){
     force[i].x = 0.0;
     force[i].y = 0.0;

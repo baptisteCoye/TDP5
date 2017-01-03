@@ -1,6 +1,10 @@
 #ifndef DATATYPE_H
 #define DATATYPE_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
 typedef struct {
   double m;
   double px;
@@ -10,6 +14,8 @@ typedef struct {
   double ax;
   double ay;
 } particule;
+
+particule BAD_PARTICLE = {-1,-1,-1,-1,-1,-1,-1};
 
 void print_particule(particule p){
   printf("%lf %lf %lf %lf %lf %lf %lf\n", p.m, p.px, p.py, p.vx, p.vy, p.ax, p.ay);
@@ -51,18 +57,18 @@ void destroy_quadtree(quadtree* q){
 particule get_noeud(quadtree q, int hauteur, int i, int j){
   if ((hauteur >= q.h) || (hauteur < 0)){
     fprintf(stderr,"mauvaise profondeur dans le quadtree : demandé : %d, profondeur des feuilles : %d\n", hauteur, q.h);
-    return p;
+    return BAD_PARTICLE;
   }
-  if ((i >= pow(2, hauteur)) || (j >= pow(2,h))){
-    fprintf(stderr,"mauvais indices dans le quadtree, i = %d, j = %d, max = %d", i, j, pow(2, hauteur));
-    return p;
+  if ((i >= pow(2, hauteur)) || (j >= pow(2,hauteur))){
+    fprintf(stderr,"mauvais indices dans le quadtree, i = %d, j = %d, max = %d", i, j, (int)pow(2, hauteur));
+    return BAD_PARTICLE;
   }
 
-  return q.p[q.begin[h]+i*pow(2,h)+j];
+  return q.p[q.begin[hauteur]+i*((int) pow(2,hauteur))+j];
 }
 
 particule * get_bloc(quadtree q, int i, int j){
-  return &(q.p[q.begin[q.h] + 2000*(i*pow(2,h) + j)]);
+  return &(q.p[q.begin[q.h] + 2000*(i*((int) pow(2,q.h)) + j)]);
 }
 
 #endif
