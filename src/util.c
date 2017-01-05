@@ -293,26 +293,28 @@ double dist(vecteur A, particule B){
 
 void rec_calc(particule * bloc, vecteur * force, int N, double * distMin,	      vecteur centre,
 	      quadtree q,  int pos, int h, int size){
-  printf("call to rec_calc : \n  bloc = %d, N = %d\n  centre = [%lf,%lf]\n  pos = %d\n  h = %d\n  size = %d\n", bloc, N, centre.x, centre.y, pos, h, size);
+  
 
-    printf("dist : %lf\nteta*size : %lf\n", dist(centre, q.p[pos]), teta*size);
-    print_particule(q.p[pos]);
-  if ((h != q.h) && (dist(centre, q.p[pos]) >= teta*size)){
-    printf("DONE M2P\n");
+  /*
+  printf("dist : %lf\nteta*size : %lf\n", dist(centre, q.p[pos]), teta*size);
+  print_particule(q.p[pos]);*/
+  if (size < teta*dist(centre, q.p[pos])){
+    //printf("DONE M2P\n");
     M2P(force, q.p[pos], bloc, N);
     return;
   }
-
+  
   if (h == q.h){
+    /*printf("call to rec_calc : \n  bloc = %d, N = %d\n  centre = [%lf,%lf]\n  pos = %d\n  h = %d\n  size = %d\n", bloc, N, centre.x, centre.y, pos, h, size);*/
     int r = q.begin[h+1] + q.max_part*(pos - q.begin[h]);
     
     // printf("%d %d\n",&(q.p[r]), &(bloc[0]));
     if (&(q.p[r]) == &(bloc[0])){
-      printf("DONE P2P\n");
+      //printf("DONE P2P\n");
       P2P(force, bloc, N, distMin);
     }
     else{
-      printf("DONE P2P_EXT\n");
+      //printf("DONE P2P_EXT\n");
       P2P_ext(force, &(q.p[r]), bloc, N, distMin);
     }
     return;

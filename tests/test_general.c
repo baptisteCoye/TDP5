@@ -9,9 +9,9 @@
 
 #define FILENAME "../tests/data/file_test2.txt"
 #define NB_ITER 256
-#define NBPART_PER_BLOCK 1
+#define NBPART_PER_BLOCK 100
 #define MAX_SIZE_BLOCK 2000
-#define h 2
+#define h 6
 
 
 int main(int argc, char ** argv){
@@ -33,7 +33,7 @@ int main(int argc, char ** argv){
   
   for (int i = h-1; i >= 0; i--){
     for (int j = 0; j < pow(4,i); j++){
-      q.p[q.begin[i] + j] = M2M(&(q.p[q.begin[i+1] + j]), 4);
+      q.p[q.begin[i] + j] = M2M(&(q.p[q.begin[i+1] + j*4]), 4);
     }
   }
   
@@ -60,6 +60,7 @@ int main(int argc, char ** argv){
   for (int i = 0; i < nb_blocks; i++){
     /*    printf("bloc numéro: %d\n", i);
 	  print_particule(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]);*/
+    // printf("########################################\n");
     rec_calc(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]), &(force[tmpf]), q.tailles_blocs[i], &(distMin[tmpf]), centres[i], q, 0, 0, 100);
     
     accelerate(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]),&(force[tmpf]),n);
