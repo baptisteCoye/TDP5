@@ -24,6 +24,13 @@
  */
 double distance(particule A, particule B);
 
+
+double dist(vecteur A, particule B);
+
+void rec_calc(particule * bloc, vecteur * force, int N, double * distMin,
+	      vecteur centre,
+	      quadtree q,  int pos, int h, int size);
+
 /*!
  * \brief calcule l'interaction entre deux particules
  *
@@ -90,11 +97,15 @@ double determine_dt_forall(particule* data, vecteur* force, int N, double* distM
 
 void fill_random_bloc(particule* bloc, int N, double x, double y, double sizeX, double sizeY);
 
+void fill(particule * bloc, int size, int nb_part, double x, double y, double dx, double dy, int h, vecteur * centres, int nb);
+
+void monopole(particule* bloc, int N, double * m);
+
 particule P2M(particule* bloc, int N);
 
 void M2P(vecteur* force, particule mp, particule* data, int N);
 
-void M2M(particule* bloc, int N);
+particule M2M(particule* bloc, int N);
 
 #endif
 

@@ -1,6 +1,7 @@
 #include"util.h"
 
 #define G 6.67
+#define teta 0.707
 
 double distance(particule A, particule B){
   return sqrt((A.px - B.px)*(A.px - B.px) + (A.py - B.py)*(A.py - B.py));
@@ -226,16 +227,29 @@ double determine_dt_forall(particule* data, vecteur* force, int N, double* distM
 }
 
 
-void fill_random_bloc(particule* bloc, int N, double x, double y, double sizeX, double sizeY){
+void fill_random_bloc(particule* bloc, int N, double x, double y, double dx, double dy){
   int i;
   srand(time(NULL));
   
   for(i = 0; i < N; i++){
     bloc[i].m = (double) (rand() % 1000);
-    bloc[i].px = (double) ((rand() % ((int) sizeX)) + x);
-    bloc[i].py = (double) ((rand() % ((int) sizeY)) + (y - sizeY));
-    bloc[i].vx = (double) (rand() % ((int) sizeX) - (sizeX/2));
-    bloc[i].vy = (double) (rand() % ((int) sizeY) - (sizeY/2));
+    bloc[i].px = (double) ((rand() % ((int) dx)) + x);
+    bloc[i].py = (double) ((rand() % ((int) dy)) + y);
+    bloc[i].vx = (double) (rand() % ((int) dx) - (dx/2));
+    bloc[i].vy = (double) (rand() % ((int) dy) - (dy/2));
+  }
+}
+
+void fill(particule * bloc, int size, int nb_part, double x, double y, double dx, double dy, int h, vecteur * centres, int nb){
+  if (h == 0){
+    fill_random_bloc(bloc, nb_part, x, y, dx, dy);
+    centres->x = (x+dx/2);
+    centres->y = (y+dy/2);
+    return;
+  }
+
+  for (int i = 0; i < 4; i++){
+    fill(&(bloc[i*size/4]), size/4, nb_part/4, x+((i%2)*dx/2), y+(1-i/2)*dy/2, dx/2, dy/2, h-1, &(centres[i*nb/4]), nb/4);
   }
 }
 
@@ -268,6 +282,37 @@ particule P2M(particule* bloc, int N){
   return resultat;
 }
 
+double dist(vecteur A, particule B){
+  return sqrt((A.x - B.px)*(A.x - B.px) + (A.y - B.py)*(A.y - B.py));
+}
+
+void rec_calc(particule * bloc, vecteur * force, int N, double * distMin,	      vecteur centre,
+	      quadtree q,  int pos, int h, int size){
+  if (dist(centre, q.p[pos]) >= teta*size){    
+    M2P(force, q.p[pos], bloc, N);
+    return;
+  }
+
+  if (h == q.h){
+    printf("%d %d\n",&(q.p[pos]), &(bloc[0]));
+    if (&(q.p[pos]) == &(bloc[0])){
+      printf("DONE P2P\n");
+      P2P(force, bloc, N, distMin);
+    }
+    else{
+      printf("DONE P2P_EXT\n");
+      P2P_ext(force, &(q.p[q.begin[h+1] + q.max_part*((4*pos+1) - q.begin[h+1])]), bloc, N, distMin);
+    }
+    return;
+  }
+  
+  int nextIndexBegin = 4*pos + 1;
+  for(int i = nextIndexBegin; i < nextIndexBegin + 4; i++){
+    rec_calc(bloc, force, N, distMin, centre,
+	     q, i, h+1, size/2);
+  }
+}
+
 void M2P(vecteur* force, particule mp, particule* data, int N){
   vecteur tmp;
   double distTmp;
@@ -278,6 +323,6 @@ void M2P(vecteur* force, particule mp, particule* data, int N){
   }
 }
 
-void M2M(particule * bloc, int N){
-  P2M(bloc, N);
+particule M2M(particule * bloc, int N){
+  return P2M(bloc, N);
 }

@@ -20,3 +20,6 @@ target_link_libraries(test_direct_ext util)
 
 add_executable(test_P2M test_P2M.c)
 target_link_libraries(test_P2M util m)
+
+add_executable(test_gen test_general.c)
+target_link_libraries(test_gen util m)

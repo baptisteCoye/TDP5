@@ -9,38 +9,45 @@
 
 #define FILENAME "../tests/data/file_test2.txt"
 #define NB_ITER 100
-#define NBPART_PER_BLOCK 1000
-#define MAX_SIZE_BLOC 2000
-#define h 3
-#define teta 0.707
+#define NBPART_PER_BLOCK 1
+#define MAX_SIZE_BLOCK 2000
+#define h 2
+
 
 int main(int argc, char ** argv){
   int nb_blocks = pow(4,h);
-  int n = NB_PART_PER_BLOCK;
+  int n = NBPART_PER_BLOCK;
   int N = n*nb_blocks;
-
+  vecteur * centres = malloc(sizeof(vecteur) * nb_blocks);
+  
   quadtree q;
-  allocate_quadtree(&q, h, MAX_SIZE_BLOC);
+  allocate_quadtree(&q, h, MAX_SIZE_BLOCK);
+  
+  fill(&(q.p[q.begin[h+1]]), nb_blocks*MAX_SIZE_BLOCK, N, 0, 0, 100, 100, h, centres, nb_blocks);
 
-  for (int i = 0; i < pow(2,h); i++){
-    for (int j = 0; j < pow(2,h); i++){
-      fill_random_bloc(get_bloc(q, i, j), NBPART_PER_BLOCK, 100*(i%pow(2,h)), (pow(2,h)*100) - 100*(i/pow(2,h)), 100, 100);
+  for (int j = 0; j < nb_blocks; j++){
+    q.p[q.begin[h] + j] = P2M(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*j]), n);
+    q.tailles_blocs[j] = n;
+  }
+  
+  for (int i = h-1; i >= 0; i--){
+    for (int j = 0; j < pow(4,i); j++){
+      q.p[q.begin[i] + j] = M2M(&(q.p[q.begin[i+1] + j]), 4);
     }
   }
   
   vecteur * force = malloc(sizeof(vecteur) * N);
   double * distMin = malloc(sizeof(double) * N);
-  double dt, dt1, dt2;
-
-  printf("bloc 1 : \n");
-  for (int i = 0; i < n; i++){
-    print_particule(total[i]);
+  double dt = DT_MAX, dtmp;
+   
+  for(int i = 0; i < nb_blocks; i++){
+    print_particule(q.p[q.begin[h+1]+2000*i]);
+    }
+  printf("\n");
+  for(int i = 0; i < 4; i++){
+    print_particule(q.p[q.begin[h-1]+i]);
   }
-  printf("bloc 2 : \n");
-  for (int i = n; i < N; i++){
-    print_particule(total[i]);
-  }
- 
+  print_particule(q.p[q.begin[h-2]]);
   // Initialisation des forces à 0 et des distances à -1
   for (int i = 0; i < N; i++){
     force[i].x = 0.0;
@@ -48,52 +55,19 @@ int main(int argc, char ** argv){
     distMin[i] = -1.0;
   }
 
-  // P2P du bloc 1
-  P2P(&force[0], &total[0], n, &distMin[0]);
-  
-  // P2P du bloc 2
-  P2P(&force[n], &total[n], n, &distMin[n]);
+  int tmpf = 0;
+  for (int i = 0; i < nb_blocks; i++){
+    printf("bloc numéro: %d\n", i);
+    rec_calc(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]), &(force[tmpf]), q.tailles_blocs[i], &(distMin[tmpf]), centres[i], q, 0, 0, 100);
+    
+    accelerate(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]),&(force[tmpf]),n);
+    dtmp = determine_dt_forall(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]), &(force[tmpf]), n, &(distMin[tmpf]), 1);   
+    if (dtmp < dt){
+      dt = dtmp;
+    }
 
-  // P2M du bloc 1
-  particule mp1 = P2M(&total[0], n);
-
-  // P2M du bloc 2
-  particule mp2 = P2M(&total[n], n);
-
-  // M2P du bloc 1 vers le bloc 2
-  M2P(&force[n], mp1, &total[n], n);
-
-  // M2P du bloc 2 vers le bloc 1
-  M2P(&force[0], mp2, &total[0], n);
-
-  // accelere les particules du bloc 1
-  accelerate(&total[0],&force[0],n);
-
-  // accelere les particules du bloc 2
-  accelerate(&total[n],&force[n],n);
-
-  // determine le dt dans le bloc 1
-  dt1 = determine_dt_forall(&total[0], &force[0], n, &distMin[0], 1);
-
-  // determine le dt dans le bloc 2
-  dt2 = determine_dt_forall(&total[n], &force[n], n, &distMin[n], 1);
-
-  // calcule le bon dt
-  dt = min(dt1, dt2);
-
-  //bouge les particules dans le bloc 1
-  move_particules(&total[0],&force[0], n, dt);
-
-  //bouge les particules dans le bloc 2
-  move_particules(&total[n],&force[n], n, dt);
-
-
-  printf("bloc 1 : \n");
-  for (int i = 0; i < n; i++){
-    print_particule(total[i]);
-  }
-  printf("bloc 2 : \n");
-  for (int i = n; i < N; i++){
-    print_particule(total[i]);
+    move_particules(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]), &(force[tmpf]), n, dt);
+    
+    tmpf += q.tailles_blocs[i];
   }
 }
