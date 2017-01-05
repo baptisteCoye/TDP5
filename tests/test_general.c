@@ -58,6 +58,7 @@ int main(int argc, char ** argv){
   int tmpf = 0;
   for (int i = 0; i < nb_blocks; i++){
     printf("bloc numéro: %d\n", i);
+    print_particule(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]);
     rec_calc(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]), &(force[tmpf]), q.tailles_blocs[i], &(distMin[tmpf]), centres[i], q, 0, 0, 100);
     
     accelerate(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]),&(force[tmpf]),n);
