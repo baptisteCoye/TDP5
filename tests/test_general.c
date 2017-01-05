@@ -8,13 +8,14 @@
 #include "TDPConfig.h"
 
 #define FILENAME "../tests/data/file_test2.txt"
-#define NB_ITER 100
+#define NB_ITER 256
 #define NBPART_PER_BLOCK 1
 #define MAX_SIZE_BLOCK 2000
 #define h 2
 
 
 int main(int argc, char ** argv){
+  srand(time(NULL));
   int nb_blocks = pow(4,h);
   int n = NBPART_PER_BLOCK;
   int N = n*nb_blocks;
@@ -47,7 +48,7 @@ int main(int argc, char ** argv){
   for(int i = 0; i < 4; i++){
     print_particule(q.p[q.begin[h-1]+i]);
   }
-  print_particule(q.p[q.begin[h-2]]);
+  //print_particule(q.p[q.begin[h-2]]);
   // Initialisation des forces à 0 et des distances à -1
   for (int i = 0; i < N; i++){
     force[i].x = 0.0;
@@ -57,8 +58,8 @@ int main(int argc, char ** argv){
 
   int tmpf = 0;
   for (int i = 0; i < nb_blocks; i++){
-    printf("bloc numéro: %d\n", i);
-    print_particule(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]);
+    /*    printf("bloc numéro: %d\n", i);
+	  print_particule(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]);*/
     rec_calc(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]), &(force[tmpf]), q.tailles_blocs[i], &(distMin[tmpf]), centres[i], q, 0, 0, 100);
     
     accelerate(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]),&(force[tmpf]),n);
@@ -66,9 +67,9 @@ int main(int argc, char ** argv){
     if (dtmp < dt){
       dt = dtmp;
     }
-
-    move_particules(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]), &(force[tmpf]), n, dt);
-    
     tmpf += q.tailles_blocs[i];
+  }
+  for (int i = 0; i < nb_blocks; i++){
+    move_particules(&(q.p[q.begin[h+1] + MAX_SIZE_BLOCK*i]), &(force[tmpf]), n, dt);
   }
 }

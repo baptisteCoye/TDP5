@@ -2,9 +2,15 @@
 
 #define G 6.67
 #define teta 0.707
+#define MAX_RAND 100
 
 double distance(particule A, particule B){
   return sqrt((A.px - B.px)*(A.px - B.px) + (A.py - B.py)*(A.py - B.py));
+}
+
+double generate_random(double a, double b){
+  //srand((unsigned int) time(NULL));
+  return (rand()/(double)RAND_MAX)*(b-a)+a;
 }
 
 vecteur force_interaction(particule A, particule B, double* distanceMinTmp){
@@ -228,15 +234,14 @@ double determine_dt_forall(particule* data, vecteur* force, int N, double* distM
 
 
 void fill_random_bloc(particule* bloc, int N, double x, double y, double dx, double dy){
-  int i;
-  srand(time(NULL));
+  int i;  
   
   for(i = 0; i < N; i++){
-    bloc[i].m = ((double) (rand() % 1000)) / ((double) (rand() % 1000));
-    bloc[i].px = (double) ((rand() % ((int) dx)) + x);
-    bloc[i].py = (double) ((rand() % ((int) dy)) + y);
-    bloc[i].vx = (double) (rand() % ((int) dx) - (dx/2));
-    bloc[i].vy = (double) (rand() % ((int) dy) - (dy/2));
+    bloc[i].m = generate_random(1,100);
+    bloc[i].px = generate_random(0,dx)+ x;
+    bloc[i].py = generate_random(0,dy)+ y;
+    bloc[i].vx = 0;//(double) (rand() % ((int) dx) - (dx/2));
+    bloc[i].vy = 0;//(double) (rand() % ((int) dy) - (dy/2));
   }
 }
 
@@ -288,11 +293,11 @@ double dist(vecteur A, particule B){
 
 void rec_calc(particule * bloc, vecteur * force, int N, double * distMin,	      vecteur centre,
 	      quadtree q,  int pos, int h, int size){
-  //  printf("call to rec_calc : \n  bloc = %d\n  N = %d\n  centre = [%lf,%lf]\n  pos = %d\n  h = %d\n  size = %d\n", bloc, N, centre.x, centre.y, pos, h, size);
+  printf("call to rec_calc : \n  bloc = %d, N = %d\n  centre = [%lf,%lf]\n  pos = %d\n  h = %d\n  size = %d\n", bloc, N, centre.x, centre.y, pos, h, size);
 
-  printf("dist : %lf\nteta*size : %lf\n", dist(centre, q.p[pos]), teta*size);
-  print_particule(q.p[pos]);
-  if (dist(centre, q.p[pos]) >= teta*size){
+    printf("dist : %lf\nteta*size : %lf\n", dist(centre, q.p[pos]), teta*size);
+    print_particule(q.p[pos]);
+  if ((h != q.h) && (dist(centre, q.p[pos]) >= teta*size)){
     printf("DONE M2P\n");
     M2P(force, q.p[pos], bloc, N);
     return;
@@ -301,7 +306,7 @@ void rec_calc(particule * bloc, vecteur * force, int N, double * distMin,	      
   if (h == q.h){
     int r = q.begin[h+1] + q.max_part*(pos - q.begin[h]);
     
-    printf("%d %d\n",&(q.p[r]), &(bloc[0]));
+    // printf("%d %d\n",&(q.p[r]), &(bloc[0]));
     if (&(q.p[r]) == &(bloc[0])){
       printf("DONE P2P\n");
       P2P(force, bloc, N, distMin);
@@ -312,7 +317,6 @@ void rec_calc(particule * bloc, vecteur * force, int N, double * distMin,	      
     }
     return;
   }
-  
   int nextIndexBegin = 4*pos + 1;
   for(int i = nextIndexBegin; i < nextIndexBegin + 4; i++){
     rec_calc(bloc, force, N, distMin, centre,
